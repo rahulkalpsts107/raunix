@@ -9,6 +9,8 @@ Raunix is only for educational purpose only to demonstrate a unix like OS.
 All code in this repository is subject to the terms in the
 LICENSE document.
 
+Raunix will be completely documented over the course of development in /doc folder
+
 Raunix is built over BasicOS and all credit goes to Aun-Ali Zaidi to help startup and build on this.
 Follow here : https://github.com/aunali1/BasicOS
 
@@ -29,4 +31,4 @@ Dirent Structure :
 +	include		/*C/C++ Includes*/
 +	out		/*Build output*/
 +	scripts		/*Scripts for isoimage creation*/
-
++	doc		/*documentation*/
