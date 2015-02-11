@@ -27,7 +27,6 @@ Dirent Structure :
 
 +	src		/*Source Code*/
 +	include		/*C/C++ Includes*/
-+	toolchain	/*toolchain binaries*/
 +	out		/*Build output*/
-+	scrips		/*Scrips for isoimage creation*/
++	scripts		/*Scripts for isoimage creation*/
 
