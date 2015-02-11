@@ -31,5 +31,5 @@ $(KERNEL): $(COBJECTS) $(ASMOBJECTS)
 	$(AS) $(ASFLAGS)  $< -o $@
 
 clean:
-	rm -f $(COBJECTS) $(ASMOBJECTS) $(KERNEL) ../out/raunix.iso ../out/raunix.bin
+	rm -f $(COBJECTS) $(ASMOBJECTS) $(KERNEL) ../out/raunix.iso ../out/raunix.bin ../out/raunix.img ../out/bochsout.txt
 

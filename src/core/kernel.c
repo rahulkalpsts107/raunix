@@ -24,7 +24,7 @@ void kmain()
         vga_clear();
         
         // Print a warm welcome!
-        vga_write("Hello, User!");
+        vga_write("Hello, Welcome User to Raunix!");
         
         // Hang up the computer
         for (;;);
