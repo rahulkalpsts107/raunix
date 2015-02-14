@@ -40,3 +40,18 @@ void io_wait(void)
     /* The Linux kernel seems to think it is free for use :-/ */
     asm volatile ( "outb %%al, $0x80" : : "a"(0) );
 }
+
+void * memset ( void * ptr, int value, size_t num )
+{
+	u16int *dest = ptr;
+	while(num-- !=0) *dest++ = value;	 	
+	return ptr;
+}
+
+void *memcpy(void *dest, const void *src, size_t n)
+{
+	u16int *local_dest = dest;
+	const u16int *local_src = src;
+	while(n-- !=0)	*local_dest++ = *local_src++;
+	return dest;
+}

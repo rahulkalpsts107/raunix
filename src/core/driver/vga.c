@@ -1,5 +1,4 @@
-/************************************************************
- * Raunix Operating System
+ /* Raunix Operating System
  * 
  * File: kernel/vga.c
  * 
@@ -10,6 +9,33 @@
 
 #include <sys/vga.h>
 
+// Color organization in VGA upper 8 byte -> character , color scheme 4 byte (2^4) = 16colors 
+
+/* [15**12	11**8	    7******0]
+   Backcolor	Forecolor   Character */
+
+//Define colors 
+//TODO: Linking error , need to resolve and add it in header file
+
+/* Value	Color	*/
+const int VGA_BLACK 		= 0;
+const int VGA_BLUE 		= 1;
+const int VGA_GREEN		= 2;
+const int VGA_CYAN		= 3;
+const int VGA_RED 		= 4;	
+const int VGA_MAGENTA 		= 5;	
+const int VGA_BROWN 		= 6;	
+const int VGA_LIGHT_GREY 	= 7;
+const int VGA_DARK_GREY 	= 8;
+const int VGA_LIGHT_BLUE 	= 9;
+const int VGA_LIGHT_GREEN 	= 10;
+const int VGA_LIGHT_CYAN 	= 11;
+const int VGA_LIGHT_RED 	= 12;
+const int VGA_LIGHT_MAGENTA 	= 13;
+const int VGA_LIGHT_BROWN 	= 14;
+const int VGA_WHITE 		= 15;
+
+
 // VGA Framebuffer
 u16int *video_memory = (u16int *)0xB8000;
 
@@ -17,11 +43,15 @@ u16int *video_memory = (u16int *)0xB8000;
 u8int cursor_x = 0;
 u8int cursor_y = 0;
 
+//Background and foreground attributes
+u32int bg_color ;
+u32int fg_color ;
+
 // Updates the hardware cursor.
 static void move_cursor()
 {
     // The screen is 80 characters wide...
-    u16int cursorLocation = cursor_y * 80 + cursor_x;
+    u16int cursorLocation = cursor_y * 80 + cursor_x; //equation y*width + x
     outb(0x3D4, 14);                  // Tell the VGA board we are setting the high cursor byte.
     outb(0x3D5, cursorLocation >> 8); // Send the high cursor byte.
     outb(0x3D4, 15);                  // Tell the VGA board we are setting the low cursor byte.
@@ -33,7 +63,8 @@ static void scroll()
 {
 
     // Get a space character with the default colour attributes.
-    u8int attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
+
+    u8int attributeByte = (bg_color << 4) | (fg_color & 0x0F);
     u16int blank = 0x20 /* space */ | (attributeByte << 8);
 
     // Row 25 is the end, this means we need to scroll up
@@ -41,6 +72,7 @@ static void scroll()
     {
         // Move the current text chunk that makes up the screen
         // back in the buffer by a line
+
         int i;
         for (i = 0*80; i < 24*80; i++)
         {
@@ -61,13 +93,9 @@ static void scroll()
 // Writes a single character out to the screen.
 void vga_put(char c)
 {
-    // The background colour is black (0), the foreground is white (15).
-    u8int backColour = 0;
-    u8int foreColour = 15;
-
     // The attribute byte is made up of two nibbles - the lower being the 
     // foreground colour, and the upper the background colour.
-    u8int  attributeByte = (backColour << 4) | (foreColour & 0x0F);
+    u8int  attributeByte = (bg_color << 4) | (fg_color & 0x0F);
     // The attribute byte is the top 8 bits of the word we have to send to the
     // VGA board.
     u16int attribute = attributeByte << 8;
@@ -125,15 +153,14 @@ void vga_put(char c)
 void vga_clear()
 {
     // Make an attribute byte for the default colours
-    u8int attributeByte = (0 /*black*/ << 4) | (15 /*white*/ & 0x0F);
+
+    //setColor(VGA_WHITE,VGA_BLACK);
+    setColor(VGA_LIGHT_CYAN ,VGA_LIGHT_MAGENTA);
+
+    u8int attributeByte = (bg_color << 4) | (fg_color & 0x0F);
     u16int blank = 0x20 /* space */ | (attributeByte << 8);
-
-    int i;
-    for (i = 0; i < 80*25; i++)
-    {
-        video_memory[i] = blank;
-    }
-
+     
+    memset(video_memory,blank,80*25);
     // Move the hardware cursor back to the start.
     cursor_x = 0;
     cursor_y = 0;
@@ -148,4 +175,10 @@ void vga_write(char *c)
     {
         vga_put(c[i++]);
     }
+}
+
+void setColor(u32int fgColor , u32int bgColor)
+{
+	fg_color = fgColor;
+	bg_color = bgColor;
 }

@@ -25,4 +25,6 @@ void vga_clear();
 // Output a null-terminated ASCII string to the vga.
 void vga_write(char *c);
 
+//Following texts will use the new color set
+void setColor(u32int fgColor , u32int bgColor);
 #endif // VGA_H
