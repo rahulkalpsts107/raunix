@@ -17,27 +17,8 @@
 //Define colors 
 //TODO: Linking error , need to resolve and add it in header file
 
-/* Value	Color	*/
-const int VGA_BLACK 		= 0;
-const int VGA_BLUE 		= 1;
-const int VGA_GREEN		= 2;
-const int VGA_CYAN		= 3;
-const int VGA_RED 		= 4;	
-const int VGA_MAGENTA 		= 5;	
-const int VGA_BROWN 		= 6;	
-const int VGA_LIGHT_GREY 	= 7;
-const int VGA_DARK_GREY 	= 8;
-const int VGA_LIGHT_BLUE 	= 9;
-const int VGA_LIGHT_GREEN 	= 10;
-const int VGA_LIGHT_CYAN 	= 11;
-const int VGA_LIGHT_RED 	= 12;
-const int VGA_LIGHT_MAGENTA 	= 13;
-const int VGA_LIGHT_BROWN 	= 14;
-const int VGA_WHITE 		= 15;
-
-
 // VGA Framebuffer
-u16int *video_memory = (u16int *)0xB8000;
+u16int *video_memory ;
 
 // Character Cursor Position Variables
 u8int cursor_x = 0;
@@ -154,8 +135,8 @@ void vga_clear()
 {
     // Make an attribute byte for the default colours
 
-    //setColor(VGA_WHITE,VGA_BLACK);
-    setColor(VGA_LIGHT_CYAN ,VGA_LIGHT_MAGENTA);
+    //vga_setColor(VGA_WHITE,VGA_BLACK);
+    vga_setColor(VGA_LIGHT_CYAN ,VGA_BLACK);
 
     u8int attributeByte = (bg_color << 4) | (fg_color & 0x0F);
     u16int blank = 0x20 /* space */ | (attributeByte << 8);
@@ -177,8 +158,15 @@ void vga_write(char *c)
     }
 }
 
-void setColor(u32int fgColor , u32int bgColor)
+void vga_setColor(u32int fgColor , u32int bgColor)
 {
 	fg_color = fgColor;
 	bg_color = bgColor;
+}
+
+void vga_init()
+{
+	video_memory = (u16int *)0xB8000; //TODO:Maintain a table for each phy address and pick up from there
+	vga_clear();
+	vga_write("  Finished VGA Driver Init \n");
 }

@@ -16,15 +16,17 @@
 // Our kernel's first function: kmain
 void kmain()
 {
-		// FIRST enable paging and THEN load the real GDT!
+	// FIRST enable paging and THEN load the real GDT!
         init_paging();
+
         gdt_install();
-        
-        // Clear the screen
-        vga_clear();
-        
+
+	// driver init
+        vga_init();
+
         // Print a warm welcome!
-        vga_write("Hello, Welcome User to Raunix!");
+	vga_write("  Raunix is Up ! \n");
+        vga_write("  Hello User, Welcome User to Raunix! \n");
         
         // Hang up the computer
         for (;;);
